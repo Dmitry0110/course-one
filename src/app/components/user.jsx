@@ -48,9 +48,9 @@ const User = ({
 User.propTypes = {
     _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    qualities: PropTypes.object.isRequired,
-    profession: PropTypes.object.isRequired,
-    completedMeetings: PropTypes.func.isRequired,
+    qualities: PropTypes.array.isRequired,
+    profession: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    completedMeetings: PropTypes.number.isRequired,
     rate: PropTypes.number.isRequired,
     onToggleBoockmark: PropTypes.func.isRequired,
     onHandleDelete: PropTypes.func.isRequired,
