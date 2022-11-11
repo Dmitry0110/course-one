@@ -39,7 +39,7 @@ const User = ({ id, history }) => {
 
 User.propTypes = {
     id: PropTypes.string,
-    history: PropTypes.func
+    history: PropTypes.object
 };
 
 export default User;

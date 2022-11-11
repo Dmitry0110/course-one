@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { paginate } from "../utils/paginate";
 import Pagination from "./pagination";
 import api from "../api";
@@ -10,13 +10,13 @@ import _ from "lodash";
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
+    const [searchQuery, setSearchQuery] = useState("");
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
 
     const pageSize = 4;
 
     const [users, setUsers] = useState();
-
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
@@ -28,25 +28,54 @@ const Users = () => {
     const toggleBoockmark = (id) => {
         const newUsers = users.map((user) => {
             if (user._id === id) {
-                return {
-                    ...user,
-                    bookmark: !user.bookmark
-                };
+                return { ...user, bookmark: !user.bookmark };
             }
             return user;
         });
         setUsers(newUsers);
     };
 
+    // const handleDeleteName = (userName) => {
+    //     setUsers(
+    //         users.filter((user) => {
+    //             const name = user.name.toLowerCase();
+    //             const search = userName.toLowerCase();
+    //             return name.indexOf(search) !== -1;
+    //         })
+    //     );
+    // };
+
+    // const handleDeleteName = userName
+    //     ? users.filter((user) => {
+    //           const name = user.name.toLowerCase();
+    //           const search = userName.toLowerCase();
+    //           return name.indexOf(search) !== -1;
+    //       })
+    //     : selectedProf
+    //     ? users.filter((user) => {
+    //           return (
+    //               JSON.stringify(user.profession) ===
+    //               JSON.stringify(selectedProf)
+    //           );
+    //       })
+    //     : users;
+
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data));
     }, []);
+
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedProf]);
+    }, [selectedProf, searchQuery]);
 
     const handleProfessionSelect = (item) => {
+        if (searchQuery !== "") setSearchQuery("");
         setSelectedProf(item);
+    };
+
+    const handleSearchQuery = ({ target }) => {
+        setSelectedProf(undefined);
+        setSearchQuery(target.value);
     };
 
     const handlePageChange = (pageIndex) => {
@@ -58,7 +87,14 @@ const Users = () => {
     };
 
     if (users) {
-        const filteredUsers = selectedProf
+        const filteredUsers = searchQuery
+            ? users.filter(
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .indexOf(searchQuery.toLowerCase()) !== -1
+              )
+            : selectedProf
             ? users.filter(
                   (user) =>
                       JSON.stringify(user.profession) ===
@@ -73,15 +109,9 @@ const Users = () => {
             [sortBy.order]
         );
         const usersCrop = paginate(sortedUsers, currentPage, pageSize);
-        // useEffect(() => {
-        //     if (usersCrop.length === 0) {
-        //         setCurrentPage((prevState) => prevState - 1);
-        //     }
-        // }, [usersCrop]);
-        const ClearFilter = () => {
+        const clearFilter = () => {
             setSelectedProf();
         };
-
         return (
             <div className="d-flex">
                 {professions && (
@@ -93,14 +123,23 @@ const Users = () => {
                         />
                         <button
                             className="btn btn-secondary mt-2"
-                            onClick={ClearFilter}
+                            onClick={clearFilter}
                         >
                             Очистить
                         </button>
                     </div>
                 )}
+
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <input
+                        type="text"
+                        name="searchQuery"
+                        placeholder="Search..."
+                        onChange={handleSearchQuery}
+                        value={searchQuery}
+                    />
+
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}

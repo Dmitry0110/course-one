@@ -11,7 +11,7 @@ const UserList = ({ history }) => {
 };
 
 UserList.propTypes = {
-    history: PropTypes.func
+    history: PropTypes.object
 };
 
 export default UserList;
