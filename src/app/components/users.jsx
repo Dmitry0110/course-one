@@ -10,7 +10,7 @@ import _ from "lodash";
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchUsers, setSearchUsers] = useState("");
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
 
@@ -66,16 +66,16 @@ const Users = () => {
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedProf, searchQuery]);
+    }, [selectedProf, searchUsers]);
 
     const handleProfessionSelect = (item) => {
-        if (searchQuery !== "") setSearchQuery("");
+        if (searchUsers !== "") setSearchUsers("");
         setSelectedProf(item);
     };
 
-    const handleSearchQuery = ({ target }) => {
+    const handleSearchUsers = ({ target }) => {
         setSelectedProf(undefined);
-        setSearchQuery(target.value);
+        setSearchUsers(target.value);
     };
 
     const handlePageChange = (pageIndex) => {
@@ -87,12 +87,12 @@ const Users = () => {
     };
 
     if (users) {
-        const filteredUsers = searchQuery
+        const filteredUsers = searchUsers
             ? users.filter(
                   (user) =>
                       user.name
                           .toLowerCase()
-                          .indexOf(searchQuery.toLowerCase()) !== -1
+                          .indexOf(searchUsers.toLowerCase()) !== -1
               )
             : selectedProf
             ? users.filter(
@@ -134,10 +134,10 @@ const Users = () => {
                     <SearchStatus length={count} />
                     <input
                         type="text"
-                        name="searchQuery"
+                        name="searchUsers"
                         placeholder="Search..."
-                        onChange={handleSearchQuery}
-                        value={searchQuery}
+                        onChange={handleSearchUsers}
+                        value={searchUsers}
                     />
 
                     {count > 0 && (
