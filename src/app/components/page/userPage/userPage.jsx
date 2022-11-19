@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
-import api from "../api";
-import Quality from "../components/qualitie";
+import api from "../../../api";
+import Quality from "../../ui/qualities/qualitie";
 
-const User = ({ id, history }) => {
+const UserPage = ({ id }) => {
+    const history = useHistory();
     const [user, setUser] = useState();
     const handleAllUsers = () => {
         history.push("/users");
@@ -37,9 +39,9 @@ const User = ({ id, history }) => {
     return <h3>Loading...</h3>;
 };
 
-User.propTypes = {
+UserPage.propTypes = {
     id: PropTypes.string,
     history: PropTypes.object
 };
 
-export default User;
+export default UserPage;

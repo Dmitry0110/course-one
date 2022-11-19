@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { paginate } from "../utils/paginate";
-import Pagination from "./pagination";
-import api from "../api";
-import GroupList from "./groupList";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import { paginate } from "../../../utils/paginate";
+import Pagination from "../../common/pagination";
+import api from "../../../api";
+import GroupList from "../../common/groupList";
+import SearchStatus from "../../ui/searchStatus";
+import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 
-const Users = () => {
+const UsersListPade = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [searchUsers, setSearchUsers] = useState("");
@@ -34,31 +34,6 @@ const Users = () => {
         });
         setUsers(newUsers);
     };
-
-    // const handleDeleteName = (userName) => {
-    //     setUsers(
-    //         users.filter((user) => {
-    //             const name = user.name.toLowerCase();
-    //             const search = userName.toLowerCase();
-    //             return name.indexOf(search) !== -1;
-    //         })
-    //     );
-    // };
-
-    // const handleDeleteName = userName
-    //     ? users.filter((user) => {
-    //           const name = user.name.toLowerCase();
-    //           const search = userName.toLowerCase();
-    //           return name.indexOf(search) !== -1;
-    //       })
-    //     : selectedProf
-    //     ? users.filter((user) => {
-    //           return (
-    //               JSON.stringify(user.profession) ===
-    //               JSON.stringify(selectedProf)
-    //           );
-    //       })
-    //     : users;
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfessions(data));
@@ -164,4 +139,4 @@ const Users = () => {
     return "loading...";
 };
 
-export default Users;
+export default UsersListPade;
