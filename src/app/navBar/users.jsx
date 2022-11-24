@@ -6,7 +6,6 @@ import UsersListPade from "../components/page/usersListPage";
 
 const Users = () => {
     const { userId } = useParams();
-
     return userId ? <UserPage id={userId} /> : <UsersListPade />;
 };
 

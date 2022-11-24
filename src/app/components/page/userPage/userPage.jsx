@@ -8,14 +8,14 @@ const UserPage = ({ id }) => {
     const history = useHistory();
     const [user, setUser] = useState();
     const handleAllUsers = () => {
-        history.push("/users");
+        history.push(`/users/${user._id}/edit`);
     };
     useEffect(() => {
         api.users.getById(id).then((data) => setUser(data));
     }, []);
     if (user) {
         return (
-            <>
+            <div className="container px-1 m-4">
                 <h1>{user.name}</h1>
                 <h2>Профессия: {user.profession.name}</h2>
 
@@ -27,13 +27,14 @@ const UserPage = ({ id }) => {
                 <h6>completedMeetings: {user.completedMeetings}</h6>
                 <h2>Rate: {user.rate}</h2>
                 <button
+                    className="btn btn-primary"
                     onClick={() => {
                         handleAllUsers();
                     }}
                 >
-                    Все пользователи
+                    Изменить
                 </button>
-            </>
+            </div>
         );
     }
     return <h3>Loading...</h3>;

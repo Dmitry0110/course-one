@@ -2,13 +2,10 @@ import React from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
 
-const MultiSelectField = ({ options, onChange, name, label }) => {
+const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
     const optionsArray =
         !Array.isArray(options) && typeof options === "object"
-            ? Object.keys(options).map((optionName) => ({
-                  label: options[optionName].name,
-                  value: options[optionName]._id
-              }))
+            ? Object.values(options)
             : options;
 
     const handleChange = (value) => {
@@ -25,6 +22,7 @@ const MultiSelectField = ({ options, onChange, name, label }) => {
                 className="basuc-multi-select"
                 classNamePrefix="select"
                 onChange={handleChange}
+                defaultValue={defaultValue}
                 name={name}
             />
         </div>
@@ -35,7 +33,8 @@ MultiSelectField.propTypes = {
     onChange: PropTypes.func,
     options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     name: PropTypes.string,
-    label: PropTypes.string
+    label: PropTypes.string,
+    defaultValue: PropTypes.array
 };
 
 export default MultiSelectField;
