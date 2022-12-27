@@ -5,11 +5,9 @@ const CheckBoxField = ({ name, value, onChange, children, error }) => {
     const handleChange = () => {
         onChange({ name: name, value: !value });
     };
-
     const getInputClasses = () => {
         return "form-check-input" + (error ? " is-invalid" : "");
     };
-
     return (
         <div className="form-check mb-4">
             <input
@@ -27,7 +25,6 @@ const CheckBoxField = ({ name, value, onChange, children, error }) => {
         </div>
     );
 };
-
 CheckBoxField.propTypes = {
     name: PropTypes.string,
     value: PropTypes.bool,

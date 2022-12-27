@@ -31,7 +31,6 @@ const Comments = () => {
                     <AddCommentForm onSubmit={handleSubmit} />
                 </div>
             </div>
-
             {sortedComments.length > 0 && (
                 <div className="card mb-3">
                     <div className="card-body ">

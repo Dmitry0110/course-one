@@ -30,17 +30,17 @@ const RadioField = ({ options, name, onChange, value, label }) => {
                             {option.name}
                         </label>
                     </div>
-                ))}{" "}
+                ))}
             </div>
         </div>
     );
 };
 
 RadioField.propTypes = {
-    name: PropTypes.string,
-    value: PropTypes.string,
-    onChange: PropTypes.func,
     options: PropTypes.array,
+    name: PropTypes.string,
+    onChange: PropTypes.func,
+    value: PropTypes.string,
     label: PropTypes.string
 };
 

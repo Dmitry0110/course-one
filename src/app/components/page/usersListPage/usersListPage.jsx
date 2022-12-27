@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { paginate } from "../../../utils/paginate";
 import Pagination from "../../common/pagination";
 import api from "../../../api";
@@ -6,68 +7,62 @@ import GroupList from "../../common/groupList";
 import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import _ from "lodash";
-
-const UsersListPade = () => {
+import { useUser } from "../../../hooks/useUsers";
+const UsersListPage = () => {
+    const { users } = useUser();
     const [currentPage, setCurrentPage] = useState(1);
-    const [professions, setProfessions] = useState();
-    const [searchUsers, setSearchUsers] = useState("");
+    const [professions, setProfession] = useState();
+    const [searchQuery, setSearchQuery] = useState("");
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-
-    const pageSize = 4;
-
-    const [users, setUsers] = useState();
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data));
-    }, []);
+    const pageSize = 8;
 
     const handleDelete = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId));
+        // setUsers(users.filter((user) => user._id !== userId));
+        console.log(userId);
     };
-
-    const toggleBoockmark = (id) => {
-        const newUsers = users.map((user) => {
+    const handleToggleBookMark = (id) => {
+        const newArray = users.map((user) => {
             if (user._id === id) {
                 return { ...user, bookmark: !user.bookmark };
             }
             return user;
         });
-        setUsers(newUsers);
+        // setUsers(newArray);
+        console.log(newArray);
     };
 
     useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data));
+        api.professions.fetchAll().then((data) => setProfession(data));
     }, []);
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedProf, searchUsers]);
+    }, [selectedProf, searchQuery]);
 
     const handleProfessionSelect = (item) => {
-        if (searchUsers !== "") setSearchUsers("");
+        if (searchQuery !== "") setSearchQuery("");
         setSelectedProf(item);
     };
-
-    const handleSearchUsers = ({ target }) => {
+    const handleSearchQuery = ({ target }) => {
         setSelectedProf(undefined);
-        setSearchUsers(target.value);
+        setSearchQuery(target.value);
     };
 
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
-
     const handleSort = (item) => {
         setSortBy(item);
     };
 
     if (users) {
-        const filteredUsers = searchUsers
+        const filteredUsers = searchQuery
             ? users.filter(
                   (user) =>
                       user.name
                           .toLowerCase()
-                          .indexOf(searchUsers.toLowerCase()) !== -1
+                          .indexOf(searchQuery.toLowerCase()) !== -1
               )
             : selectedProf
             ? users.filter(
@@ -87,6 +82,7 @@ const UsersListPade = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
+
         return (
             <div className="d-flex">
                 {professions && (
@@ -100,28 +96,27 @@ const UsersListPade = () => {
                             className="btn btn-secondary mt-2"
                             onClick={clearFilter}
                         >
+                            {" "}
                             Очистить
                         </button>
                     </div>
                 )}
-
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
                     <input
                         type="text"
-                        name="searchUsers"
+                        name="searchQuery"
                         placeholder="Search..."
-                        onChange={handleSearchUsers}
-                        value={searchUsers}
+                        onChange={handleSearchQuery}
+                        value={searchQuery}
                     />
-
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
                             onSort={handleSort}
                             selectedSort={sortBy}
                             onDelete={handleDelete}
-                            onToggleBoockmark={toggleBoockmark}
+                            onToggleBookMark={handleToggleBookMark}
                         />
                     )}
                     <div className="d-flex justify-content-center">
@@ -138,5 +133,8 @@ const UsersListPade = () => {
     }
     return "loading...";
 };
+UsersListPage.propTypes = {
+    users: PropTypes.array
+};
 
-export default UsersListPade;
+export default UsersListPage;

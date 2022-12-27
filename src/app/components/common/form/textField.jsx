@@ -2,20 +2,17 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const TextField = ({ label, type, name, value, onChange, error }) => {
-    const [showPassword, setSwowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = ({ target }) => {
         onChange({ name: target.name, value: target.value });
     };
-
     const getInputClasses = () => {
         return "form-control" + (error ? " is-invalid" : "");
     };
-
     const toggleShowPassword = () => {
-        setSwowPassword((prevState) => !prevState);
+        setShowPassword((prevState) => !prevState);
     };
-
     return (
         <div className="mb-4">
             <label htmlFor={name}>{label}</label>
@@ -31,6 +28,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
                 {type === "password" && (
                     <button
                         className="btn btn-outline-secondary"
+                        type="button"
                         onClick={toggleShowPassword}
                     >
                         <i
@@ -45,8 +43,9 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
         </div>
     );
 };
-TextField.defaultProps = { type: "text" };
-
+TextField.defaultProps = {
+    type: "text"
+};
 TextField.propTypes = {
     label: PropTypes.string,
     type: PropTypes.string,

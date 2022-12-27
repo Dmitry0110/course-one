@@ -1,3 +1,2 @@
-import UsersListPade from "./usersListPage";
-
-export default UsersListPade;
+import UsersListPage from "./usersListPage";
+export default UsersListPage;
