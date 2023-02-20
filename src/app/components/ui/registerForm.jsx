@@ -5,34 +5,36 @@ import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useQualities } from "../../hooks/useQualities";
-import { useProfessions } from "../../hooks/useProfession";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getQualities } from "../../store/qualities";
+import { getProfessions } from "../../store/professions";
+import { signUp } from "../../store/users";
 
 const RegisterForm = () => {
-    const history = useHistory();
+    const dispatch = useDispatch();
     const [data, setData] = useState({
         email: "",
         password: "",
         profession: "",
         sex: "male",
+        name: "",
         qualities: [],
         licence: false
     });
-    const { signUp } = useAuth();
+    // const { qualities } = useQualities();
+    const qualities = useSelector(getQualities());
+    // const qualitiesList = qualities.map((q) => ({
+    //     label: q.name,
+    //     value: q._id
+    // }));
+    // console.log(qualities);
 
-    const { qualities } = useQualities();
-    const qualitiesList = qualities.map((q) => ({
-        label: q.name,
-        value: q._id
-    }));
+    const professions = useSelector(getProfessions());
 
-    const { professions } = useProfessions();
-    const professionsList = professions.map((p) => ({
-        label: p.name,
-        value: p._id
-    }));
+    // const professionsList = professions.map((p) => ({
+    //     label: p.name,
+    //     value: p._id
+    // }));
 
     const [errors, setErrors] = useState({});
 
@@ -50,6 +52,15 @@ const RegisterForm = () => {
             },
             isEmail: {
                 message: "Email введен некорректно"
+            }
+        },
+        name: {
+            isRequired: {
+                message: "Электронная почта обязательна для заполнения"
+            },
+            min: {
+                message: "Имя должен состоять минимум из 3 символов",
+                value: 3
             }
         },
         password: {
@@ -89,7 +100,7 @@ const RegisterForm = () => {
     };
     const isValid = Object.keys(errors).length === 0;
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
@@ -97,12 +108,7 @@ const RegisterForm = () => {
             ...data,
             qualities: data.qualities.map((q) => q.value)
         };
-        try {
-            await signUp(newData);
-            history.push("/");
-        } catch (error) {
-            setErrors(error);
-        }
+        dispatch(signUp(newData));
     };
 
     return (
@@ -115,6 +121,13 @@ const RegisterForm = () => {
                 error={errors.email}
             />
             <TextField
+                label="Имя"
+                name="name"
+                value={data.name}
+                onChange={handleChange}
+                error={errors.name}
+            />
+            <TextField
                 label="Пароль"
                 type="password"
                 name="password"
@@ -122,10 +135,11 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 error={errors.password}
             />
+
             <SelectField
                 label="Выбери свою профессию"
                 defaultOption="Choose..."
-                options={professionsList}
+                options={professions}
                 name="profession"
                 onChange={handleChange}
                 value={data.profession}
@@ -143,7 +157,7 @@ const RegisterForm = () => {
                 label="Выберите ваш пол"
             />
             <MultiSelectField
-                options={qualitiesList}
+                options={qualities}
                 onChange={handleChange}
                 defaultValue={data.qualities}
                 name="qualities"

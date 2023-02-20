@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useAuth } from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthErrors, logIn } from "../../store/users";
 
 const LoginForm = () => {
     const history = useHistory();
@@ -13,6 +14,7 @@ const LoginForm = () => {
         password: "",
         stayOn: false
     });
+    const loginError = useSelector(getAuthErrors());
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -21,7 +23,7 @@ const LoginForm = () => {
         }));
     };
 
-    const { logIn } = useAuth();
+    const dispatch = useDispatch();
 
     const validatorConfig = {
         email: {
@@ -58,22 +60,18 @@ const LoginForm = () => {
     };
     const isValid = Object.keys(errors).length === 0;
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        const newData = {
-            ...data
-        };
-        try {
-            await logIn(newData);
-            console.log(newData);
-            history.push("/");
-        } catch (error) {
-            setErrors(error);
-        }
+        const redirect = history.location.state
+            ? history.location.state.from.pathname
+            : "/";
+        // const newData = {
+        //     ...data
+        // };
 
-        console.log(data);
+        dispatch(logIn({ payload: data, redirect }));
     };
     return (
         <form onSubmit={handleSubmit}>
@@ -99,6 +97,7 @@ const LoginForm = () => {
             >
                 Оставаться в системе
             </CheckBoxField>
+            {loginError && <p className="text-danger">{loginError}</p>}
             <button
                 className="btn btn-primary w-100 mx-auto"
                 type="submit"
